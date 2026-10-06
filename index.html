@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMOCASE - Arsip Forensik Genetika & Misteri Anastasia</title>
+  <meta name="description" content="Lumocase: Game Investigasi Forensik dan Pewarisan Sifat Genetika. Pecahkan misteri klaim Putri Anastasia dan Anna Anderson di Berlin 1920-1922.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="noir-theme">
+
+  <!-- Audio Control Floating Bar -->
+  <aside class="audio-control-bar" aria-label="Audio Controls">
+    <button id="btn-toggle-music" class="audio-btn" title="Nyalakan / Matikan Musik Latar" aria-label="Toggle Music">
+      <span class="audio-icon" id="music-icon">🎵</span>
+      <span class="audio-label" id="music-label">Musik: MATI</span>
+      <span class="audio-wave hidden" id="audio-wave">
+        <i></i><i></i><i></i><i></i>
+      </span>
+    </button>
+    <button id="btn-toggle-sfx" class="audio-btn sfx-btn" title="Nyalakan / Matikan Efek Suara" aria-label="Toggle Sound Effects">
+      <span class="audio-icon" id="sfx-icon">🔊</span>
+      <span class="audio-label" id="sfx-label">SFX: AKTIF</span>
+    </button>
+  </aside>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast-notification hidden" role="status" aria-live="polite"></div>
+
+  <!-- SCREEN 1: COVER (ILUSTRASI) & LOADING -->
+  <section id="screen-cover" class="screen-view active-screen">
+    <div class="cover-backdrop"></div>
+    <div class="cover-vignette"></div>
+    <div class="cover-particles"></div>
+    
+    <div class="cover-content">
+      <div class="top-dossier-stamp">BERKAS RAHASIA KEPOLISIAN BERLIN • 1920–1922</div>
+      <h1 class="game-logo-title">LUMOCASE</h1>
+      <p class="game-subtitle">Arsip Penyelidikan Medis &amp; Genetika Forensik</p>
+      
+      <div class="cover-case-quote">
+        <span class="quote-mark">“</span>
+        Sains dan pewarisan sifat tidak pernah berdusta, bahkan saat sejarah diselimuti tipuan.
+        <span class="quote-mark">”</span>
+      </div>
+
+      <!-- Action Button / Initial Start -->
+      <div class="cover-action-box" id="cover-actions">
+        <button id="btn-start-investigation" class="btn-primary-noir">
+          <span class="btn-icon">🔍</span>
+          <span class="btn-text">BUKA ARSIP PENYELIDIKAN</span>
+        </button>
+        <p class="hint-start">Klik untuk memulai penyelidikan forensik</p>
+      </div>
+
+      <!-- Loading Sequence Container (Initially Hidden) -->
+      <div id="cover-loading-container" class="loading-container hidden">
+        <div class="loading-badge">MEMPROSES BERKAS...</div>
+        <div class="loading-bar-wrapper">
+          <div id="loading-bar" class="loading-bar-fill"></div>
+        </div>
+        <p id="loading-status-text" class="loading-status">Menghubungkan saksi dan bukti fisik...</p>
+        <div class="loading-fingerprint-anim">
+          <span class="fp-ring"></span>
+          <span class="fp-ring"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desk lamp spotlight aesthetic effect -->
+    <div class="lamp-spotlight"></div>
+  </section>
+
+  <!-- SCREEN 2: BERANDA (DASHBOARD & PROFIL) -->
+  <section id="screen-beranda" class="screen-view">
+    <div class="dashboard-header">
+      <div class="dossier-meta-badge">
+        <span class="flag-icon">🇩🇪</span>
+        <span>KRIMINALPOLIZEI BERLIN • ARSIP FORENSIK 1922</span>
+      </div>
+      <div class="user-status-chip">
+        <span class="chip-avatar">🕵️‍♂️</span>
+        <span id="header-user-name">Detektif Medis</span>
+        <span class="chip-rank" id="header-user-rank">Penyelidik Forensik</span>
+      </div>
+    </div>
+
+    <div class="beranda-layout-grid">
+      <!-- Panel Kiri: Profil Detektif -->
+      <div class="profile-card dossier-panel">
+        <div class="dossier-paper-header">
+          <span class="stamp-confidential">RESMI</span>
+          <h3>LENCANA &amp; PROFIL DETEKTIF</h3>
+          <p class="panel-desc">Identitas Penyelidik Pengadilan Berlin</p>
+        </div>
+
+        <div class="detective-badge-visual">
+          <div class="badge-emblem">
+            <span class="emblem-star">★</span>
+            <span class="emblem-text">BERLIN POLIZEI</span>
+            <span class="emblem-number">ID-1922-MED</span>
+          </div>
+          <div class="badge-photo-slot">
+            <img src="assets/detective-mascot.png" alt="Maskot Detektif" class="badge-mascot-preview">
+          </div>
+        </div>
+
+        <form id="profile-form" class="profile-input-form" onsubmit="event.preventDefault();">
+          <div class="form-group">
+            <label for="detective-name-input">Nama Detektif Penyelidik:</label>
+            <div class="input-wrapper">
+              <input type="text" id="detective-name-input" placeholder="Masukkan nama Anda..." maxlength="30" value="Detektif Medis">
+              <button type="button" id="btn-save-profile" class="btn-sm-save" title="Simpan Nama">Simpan</button>
+            </div>
+            <span class="input-help">Nama Anda akan tercantum di berkas sidang dan sertifikat Master of Detective.</span>
+          </div>
+        </form>
+
+        <div class="quick-stats-box">
+          <div class="stat-item">
+            <span class="stat-num" id="stat-cases">1/2</span>
+            <span class="stat-label">Kasus Terbuka</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="stat-stage">Tahap 1</span>
+            <span class="stat-label">Progres Forensik</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">Genetika</span>
+            <span class="stat-label">Metode Ilmiah</span>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button id="btn-play-now" class="btn-primary-noir w-100">
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">MULAI KASUS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel Kanan: Pemilihan 2 Kasus (Pilihan Kasus) -->
+      <div class="cases-selection-container dossier-panel">
+        <div class="dossier-paper-header">
+          <span class="stamp-active">ARSIP KASUS</span>
+          <h3>PILIHAN KASUS PENYELIDIKAN</h3>
+          <p class="panel-desc">Dua berkas kasus terdaftar di Kriminalpolizei Berlin</p>
+        </div>
+
+        <div class="cases-grid">
+          <!-- KASUS 1: TERBUKA -->
+          <article class="case-card unlocked" id="card-case-1">
+            <div class="case-badge-status status-open">TERBUKA • SIAP DISELIDIKI</div>
+            <div class="case-thumb-wrap">
+              <img src="assets/anna-anderson-photo.jpg" alt="Foto Kasus 1 Anna Anderson" class="case-thumb-img">
+              <div class="case-thumb-overlay">
+                <span class="tag-year">Berlin 1920-1922</span>
+              </div>
+            </div>
+            <div class="case-body">
+              <h4 class="case-title">Kasus 1: Misteri Klaim Putri Anastasia &amp; Darah Romanov</h4>
+              <p class="case-summary">
+                Seorang wanita di RSJ Dalldorf mengklaim sebagai Putri Anastasia, ahli waris jutaan Rubel Tsar Rusia. Ujilah kebenaran klaim ini menggunakan genetika pewarisan sifat.
+              </p>
+              <div class="case-topics">
+                <span class="pill-topic">Golongan Darah</span>
+                <span class="pill-topic">Pautan Seks (Hemofilia)</span>
+                <span class="pill-topic">Dihibrid Mendel</span>
+                <span class="pill-topic">mtDNA</span>
+                <span class="pill-topic">Antropologi Gigi</span>
+              </div>
+            </div>
+            <div class="case-footer">
+              <button class="btn-case-action" id="btn-open-case-1">
+                <span>BUKA BERKAS KASUS</span>
+                <span class="arrow-icon">➔</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- KASUS 2: TERKUNCI -->
+          <article class="case-card locked" id="card-case-2">
+            <div class="case-badge-status status-locked">🔒 TERKUNCI • ARSIP RAHASIA</div>
+            <div class="case-thumb-wrap">
+              <div class="locked-thumb-placeholder">
+                <span class="locked-icon">🔒</span>
+                <span class="locked-stamp">SEGERA HADIR</span>
+              </div>
+            </div>
+            <div class="case-body">
+              <h4 class="case-title">Kasus 2: Misteri Arsip Dokumen Hitam &amp; Kode Prusia</h4>
+              <p class="case-summary">
+                Berkas rahasia pencurian artefak dan silsilah bangsawan Prusia di Reichstag. Berkas ini masih disegel oleh departemen kearsipan federal.
+              </p>
+              <div class="case-topics">
+                <span class="pill-topic">Analisis Forensik</span>
+                <span class="pill-topic">Kriptografi Genom</span>
+                <span class="pill-topic">Autosom Lanjutan</span>
+              </div>
+            </div>
+            <div class="case-footer">
+              <button class="btn-case-action locked-btn" id="btn-locked-case-2">
+                <span>BERKAS TERKUNCI</span>
+                <span class="lock-icon">🔒</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: KASUS 1 - BRIEFING & PROLOGUE (MASKOT DETEKTIF) -->
+  <section id="screen-briefing" class="screen-view">
+    <div class="case-briefing-wrapper">
+      <div class="briefing-header">
+        <button id="btn-back-to-beranda" class="btn-nav-back">⬅ Beranda</button>
+        <div class="briefing-title-group">
+          <span class="badge-dossier-id">BERKAS PERKARA #417/1922</span>
+          <h2>KASUS PUTRI ANASTASIA ATAU ANNA ANDERSON</h2>
+        </div>
+        <div class="briefing-progress-indicator">
+          <span>Pengantar Investigasi</span>
+        </div>
+      </div>
+
+      <!-- Mascot & Dialogue Container -->
+      <div class="mascot-dialogue-stage">
+        <!-- Detective Mascot Interactive Figure -->
+        <div class="mascot-figure-container">
+          <div class="mascot-avatar-frame">
+            <img src="assets/detective-mascot.png" alt="Detektif Lumocase" class="mascot-img-char" id="mascot-actor">
+            <div class="mascot-smoke-puff"></div>
+          </div>
+          <div class="mascot-nameplate">
+            <span class="mascot-role">Inspektur Forensik</span>
+            <span class="mascot-name">Detektif Lumocase</span>
+          </div>
+        </div>
+
+        <!-- Chat Bubble / Dialogue Box -->
+        <div class="speech-bubble-container">
+          <div class="bubble-tail"></div>
+          <div class="speech-bubble-card">
+            <div class="speech-header">
+              <span class="dialogue-step-counter" id="dialogue-counter">Langkah 1 dari 5</span>
+              <button id="btn-dialogue-skip" class="btn-dialogue-skip" title="Lewati Langsung ke Bukti">Lewati Pengantar ⏭</button>
+            </div>
+            <div class="dialogue-body">
+              <p id="dialogue-text" class="dialogue-typing-text">Memuat pesan detektif...</p>
+            </div>
+            <div class="speech-footer">
+              <button id="btn-dialogue-prev" class="btn-dialogue-nav disabled" disabled>⬅ Sebelumnya</button>
+              <button id="btn-dialogue-next" class="btn-dialogue-nav btn-accent">Lanjut ➡</button>
+              <button id="btn-start-stages" class="btn-dialogue-nav btn-success-noir hidden">Mulai Analisis Bukti 🔍</button>
+            </div>
+          </div>
+
+          <!-- Mini Case Summary Evidence Cards appearing beside dialogues -->
+          <div class="prologue-preview-cards">
+            <div class="preview-mini-card">
+              <img src="assets/anna-anderson-photo.jpg" alt="Anna Anderson di RS Dalldorf">
+              <span>Anna Anderson (RS Dalldorf 1920)</span>
+            </div>
+            <div class="preview-mini-card">
+              <img src="assets/romanov-family-photo.jpg" alt="Keluarga Romanov">
+              <span>Tsar Nicholas II &amp; Alexandra</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 4: RUANG INVESTIGASI BUKTI (TAHAP 1 - 5) -->
+  <section id="screen-investigation" class="screen-view">
+    <div class="investigation-board">
+      
+      <!-- Top Stage Navigation Tabs (String & Pin Board Style) -->
+      <nav class="stages-timeline-nav" aria-label="Tahapan Investigasi">
+        <button class="stage-nav-btn active" data-stage="1" id="tab-stage-1">
+          <span class="tab-pin">📌</span>
+          <span class="tab-num">Tahap 1</span>
+          <span class="tab-title">Spesimen Darah</span>
+        </button>
+        <button class="stage-nav-btn" data-stage="2" id="tab-stage-2">
+          <span class="tab-pin">📌</span>
+          <span class="tab-num">Tahap 2</span>
+          <span class="tab-title">Penyakit Kerajaan</span>
+        </button>
+        <button class="stage-nav-btn" data-stage="3" id="tab-stage-3">
+          <span class="tab-pin">📌</span>
+          <span class="tab-num">Tahap 3</span>
+          <span class="tab-title">Identitas Asli</span>
+        </button>
+        <button class="stage-nav-btn" data-stage="4" id="tab-stage-4">
+          <span class="tab-pin">📌</span>
+          <span class="tab-num">Tahap 4</span>
+          <span class="tab-title">DNA Mitokondria</span>
+        </button>
+        <button class="stage-nav-btn" data-stage="5" id="tab-stage-5">
+          <span class="tab-pin">📌</span>
+          <span class="tab-num">Tahap 5</span>
+          <span class="tab-title">Forensik Dental</span>
+        </button>
+        <button class="stage-nav-btn court-nav-btn" data-stage="6" id="tab-stage-6">
+          <span class="tab-pin">⚖️</span>
+          <span class="tab-num">Tahap 6</span>
+          <span class="tab-title">Sidang Putusan</span>
+        </button>
+      </nav>
+
+      <!-- Main Stage Canvas Area -->
+      <main class="stage-content-area" id="stage-viewport">
+        
+        <!-- =================== TAHAP 1 =================== -->
+        <article class="stage-panel active" id="stage-panel-1">
+          <header class="stage-header">
+            <div class="stage-meta">
+              <span class="stage-badge">TAHAP 1: ANALISIS SPESIMEN DARAH</span>
+              <span class="tp-badge">Uji Golongan Darah ABO (Alel Ganda Autosom)</span>
+            </div>
+            <h2 class="stage-main-title">Pencocokan Dokumen Medis Rusia &amp; Pasien Dalldorf</h2>
+            <p class="stage-lead">
+              Langkah pertama kepolisian Berlin adalah mencocokkan dokumen medis Kekaisaran Rusia yang berhasil diselamatkan dengan hasil tes darah Anna Anderson di rumah sakit Berlin.
+            </p>
+          </header>
+
+          <div class="evidence-grid-duo">
+            <!-- Bukti 1: Medis Rusia -->
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-imperial">ARSIP TSAR 1912</div>
+              <div class="evidence-media-wrap">
+                <img src="assets/romanov-family-photo.jpg" alt="Dokumen Medis Tsar Rusia" class="evidence-img">
+              </div>
+              <div class="evidence-info">
+                <h3>Bukti Dokumen Medis Rusia</h3>
+                <ul class="evidence-bullets">
+                  <li><strong>Tsar Nicholas II:</strong> Bergolongan darah <strong>A (Heterozigot)</strong> &rarr; Genotipe <code>Iᴬ Iᴼ</code></li>
+                  <li><strong>Tsarina Alexandra:</strong> Bergolongan darah <strong>B (Heterozigot)</strong> &rarr; Genotipe <code>Iᴮ Iᴼ</code></li>
+                </ul>
+                <div class="evidence-note">
+                  <em>Dokumen resmi istana St. Petersburg yang disimpan di arsip Eropa.</em>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bukti 2: RS Berlin -->
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-hospital">RS DALLDORF 1920</div>
+              <div class="evidence-media-wrap">
+                <img src="assets/anna-anderson-photo.jpg" alt="Anna Anderson RS Berlin" class="evidence-img">
+              </div>
+              <div class="evidence-info">
+                <h3>Bukti Medis Rumah Sakit Berlin</h3>
+                <ul class="evidence-bullets">
+                  <li><strong>Pasien Anna Anderson:</strong> Memiliki golongan darah <strong>O</strong> &rarr; Genotipe <code>Iᴼ Iᴼ</code></li>
+                  <li><strong>Status:</strong> Wanita tanpa identitas dari Jembatan Sungai Spree.</li>
+                </ul>
+                <div class="evidence-note">
+                  <em>Hasil uji serum aglutinasi laboratorium kepolisian Berlin.</em>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Punnett Box / Genetics Simulation -->
+          <section class="genetics-simulator-box" aria-label="Simulasi Persilangan Golongan Darah">
+            <div class="simulator-header">
+              <span class="sim-icon">🔬</span>
+              <h4>Laboratorium Analisis: Persilangan Genotipe IᴬIᴼ × IᴮIᴼ</h4>
+            </div>
+            <div class="punnett-interactive-wrap">
+              <table class="punnett-table" aria-label="Tabel Punnett Golongan Darah">
+                <thead>
+                  <tr>
+                    <th>Gamet</th>
+                    <th>Iᴮ (Tsarina)</th>
+                    <th>Iᴼ (Tsarina)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>Iᴬ (Tsar)</th>
+                    <td class="cell-genotype"><code>IᴬIᴮ</code> <span class="pheno-label">Gol. AB (25%)</span></td>
+                    <td class="cell-genotype"><code>IᴬIᴼ</code> <span class="pheno-label">Gol. A (25%)</span></td>
+                  </tr>
+                  <tr>
+                    <th>Iᴼ (Tsar)</th>
+                    <td class="cell-genotype"><code>IᴮIᴼ</code> <span class="pheno-label">Gol. B (25%)</span></td>
+                    <td class="cell-genotype highlight-genotype"><code>IᴼIᴼ</code> <span class="pheno-label">Gol. O (25%) ★</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="simulator-verdict">
+                <div class="mascot-mini-tip">
+                  <img src="assets/detective-mascot.png" alt="Mascot Mini" class="mini-mascot-img">
+                  <div class="mini-bubble">
+                    <strong>Catatan Detektif Medis:</strong>
+                    "Perhatikan, pasangan ayah bergolongan A heterozigot (IᴬIᴼ) dan ibu B heterozigot (IᴮIᴼ) berpeluang melahirkan anak bergolongan darah O (IᴼIᴼ) sebesar 25%. Maka secara sains, tes darah <strong>belum dapat membantah</strong> klaim Anna Anderson!"
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Input Kolom Jawaban (WAJIB DIBERIKAN DI AKHIR SETIAP TAHAPAN) -->
+          <section class="stage-answer-section" aria-label="Kolom Catatan Penyelidik">
+            <div class="answer-card">
+              <div class="answer-prompt-header">
+                <span class="prompt-icon">📝</span>
+                <label for="input-stage-1" class="prompt-question">APA INFORMASI YANG TELAH DIDAPATKAN?</label>
+              </div>
+              <p class="prompt-subtext">
+                Tuliskan temuan Anda mengenai kecocokan golongan darah Anna Anderson dengan Tsar dan Tsarina. (Catatan akan disimpan ke dalam Berkas Penyelidikan Anda).
+              </p>
+              <textarea id="input-stage-1" class="detective-textarea" placeholder="Contoh catatan: Dari persilangan IAIO x IBIO, kemungkinan anak adalah AB, A, B, dan O masing-masing 25%. Jadi anak bergolongan O masih mungkin terjadi, sehingga hasil tes darah belum cukup membuktikan kebohongan Anna Anderson..."></textarea>
+              <div class="answer-action-bar">
+                <span class="save-status-msg" id="status-stage-1">Catatan tersimpan otomatis</span>
+                <button type="button" class="btn-save-stage" data-next-stage="2" id="btn-save-stage-1">
+                  <span>Simpan Catatan &amp; Lanjut ke Tahap 2</span>
+                  <span class="btn-arrow">➡</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <!-- =================== TAHAP 2 =================== -->
+        <article class="stage-panel hidden" id="stage-panel-2">
+          <header class="stage-header">
+            <div class="stage-meta">
+              <span class="stage-badge">TAHAP 2: REKAM MEDIS PENYAKIT "DARAH KERAJAAN"</span>
+              <span class="tp-badge">Menguji TP 4 - Tautan Seks (Kromosom X Resesif)</span>
+            </div>
+            <h2 class="stage-main-title">Penyakit Hemofilia Dinasti Romanov vs Kondisi Anna</h2>
+            <p class="stage-lead">
+              Seorang jurnalis investigasi di Berlin mencurigai Anna Anderson. Ia mengingatkan polisi tentang penyakit Hemofilia (darah sukar membeku, terpaut kromosom X resesif: Xʰ) yang terkenal mengutuk garis keturunan Romanov.
+            </p>
+          </header>
+
+          <div class="evidence-grid-duo">
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-imperial">CATATAN KERAJAAN</div>
+              <div class="evidence-info">
+                <h3>Bukti Catatan Kerajaan Rusia</h3>
+                <ul class="evidence-bullets">
+                  <li><strong>Tsar Nicholas II:</strong> Pria Normal &rarr; Genotipe <code>XᴴY</code></li>
+                  <li><strong>Anak Laki-laki (Pangeran Alexei):</strong> Menderita Hemofilia Parah &rarr; Genotipe <code>XʰY</code></li>
+                  <li><strong>Fakta Medis Ibu:</strong> Karena Tsar normal (Y), gen Xʰ Alexei pasti berasal dari Tsarina Alexandra! Artinya Alexandra adalah <strong>Carrier</strong> &rarr; Genotipe <code>XᴴXʰ</code></li>
+                </ul>
+                <div class="formula-box">
+                  <code>Persilangan: Ayah (XᴴY) × Ibu Carrier (XᴴXʰ)</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-warning">LABORATORIUM BERLIN</div>
+              <div class="evidence-info">
+                <h3>Bukti Hasil Lab Berlin</h3>
+                <ul class="evidence-bullets">
+                  <li><strong>Tim Dokter Berlin:</strong> Menemukan bahwa pasien <strong>Anna Anderson positif menderita penyakit Hemofilia aktif!</strong></li>
+                  <li><strong>Genotipe Anna Anderson:</strong> Wanita penderita Hemofilia &rarr; Genotipe <code>XʰXʰ</code></li>
+                  <li><strong>Syarat Terjadinya:</strong> Seorang wanita menderita hemofilia (XʰXʰ) <em>hanya</em> jika ayahnya adalah penderita hemofilia (XʰY) dan ibunya carrier/penderita!</li>
+                </ul>
+                <div class="alert-box-warning">
+                  ⚠️ <strong>KONTRAKDIKSI FATAL TERDETEKSI:</strong> Tsar Nicholas II adalah pria NORMAL (XᴴY)!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analisis Genetika Pautan Seks -->
+          <section class="genetics-simulator-box" aria-label="Analisis Pautan Seks Hemofilia">
+            <div class="simulator-header">
+              <span class="sim-icon">🧬</span>
+              <h4>Uji Persilangan Kromosom Seks Romanov: XᴴY × XᴴXʰ</h4>
+            </div>
+            <div class="punnett-interactive-wrap">
+              <table class="punnett-table" aria-label="Tabel Punnett Hemofilia">
+                <thead>
+                  <tr>
+                    <th>Gamet</th>
+                    <th>Xᴴ (Ibu Tsarina)</th>
+                    <th>Xʰ (Ibu Tsarina)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>Xᴴ (Ayah Tsar)</th>
+                    <td class="cell-genotype"><code>XᴴXᴴ</code> <span class="pheno-label">Wanita Normal Homozigot</span></td>
+                    <td class="cell-genotype"><code>XᴴXʰ</code> <span class="pheno-label">Wanita Carrier (Normal)</span></td>
+                  </tr>
+                  <tr>
+                    <th>Y (Ayah Tsar)</th>
+                    <td class="cell-genotype"><code>XᴴY</code> <span class="pheno-label">Pria Normal</span></td>
+                    <td class="cell-genotype"><code>XʰY</code> <span class="pheno-label">Pria Hemofilia (Alexei)</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="simulator-verdict">
+                <div class="mascot-mini-tip">
+                  <img src="assets/detective-mascot.png" alt="Mascot Mini" class="mini-mascot-img">
+                  <div class="mini-bubble">
+                    <strong>Temuan Kunci Detektif:</strong>
+                    "Lihat tabelnya! Seluruh anak perempuan dari Tsar Nicholas II (XᴴY) <strong>pasti menerima alel Xᴴ dominan dari sang ayah</strong>. Maka anak perempuan Romanov hanya bisa XᴴXᴴ atau XᴴXʰ (tidak pernah menderita sakit). 
+                    Karena Anna Anderson menderita hemofilia (XʰXʰ), ia <strong>MUSTAHIL</strong> anak kandung Tsar Nicholas II!"
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Input Kolom Jawaban -->
+          <section class="stage-answer-section" aria-label="Kolom Catatan Penyelidik">
+            <div class="answer-card">
+              <div class="answer-prompt-header">
+                <span class="prompt-icon">📝</span>
+                <label for="input-stage-2" class="prompt-question">APA INFORMASI YANG TELAH DIDAPATKAN?</label>
+              </div>
+              <p class="prompt-subtext">
+                Tuliskan analisa genetika pautan seks Anda mengenai mengapa Anna Anderson yang menderita hemofilia tidak mungkin putri dari Tsar Nicholas II.
+              </p>
+              <textarea id="input-stage-2" class="detective-textarea" placeholder="Contoh catatan: Ayah normal (XHY) selalu mewariskan kromosom XH dominan ke semua anak perempuannya. Jadi anak perempuan Tsar Nicholas II mustahil menderita hemofilia (XhXh). Karena Anna Anderson terbukti sakit hemofilia, maka ia bukan anak Tsar..."></textarea>
+              <div class="answer-action-bar">
+                <span class="save-status-msg" id="status-stage-2">Catatan tersimpan otomatis</span>
+                <button type="button" class="btn-save-stage" data-next-stage="3" id="btn-save-stage-2">
+                  <span>Simpan Catatan &amp; Lanjut ke Tahap 3</span>
+                  <span class="btn-arrow">➡</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <!-- =================== TAHAP 3 =================== -->
+        <article class="stage-panel hidden" id="stage-panel-3">
+          <header class="stage-header">
+            <div class="stage-meta">
+              <span class="stage-badge">TAHAP 3: MELACAK IDENTITAS ASLI</span>
+              <span class="tp-badge">Menguji TP 2 &amp; TP 3 - Hukum Mendel II / Persilangan Dihibrid</span>
+            </div>
+            <h2 class="stage-main-title">Laporan Buruh Pabrik Polandia: Franziska Schanzkowska</h2>
+            <p class="stage-lead">
+              Setelah mendeteksi kebohongan Anna, Kepolisian Berlin menyebarkan foto wanita ini ke seluruh Jerman. Seorang pemilik kos di pinggiran Berlin melapor bahwa wajah wanita itu sangat mirip dengan mantan penyewanya yang hilang, seorang buruh pabrik asal Polandia bernama Franziska Schanzkowska.
+            </p>
+          </header>
+
+          <div class="evidence-grid-duo">
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-police">ARSIP KELUARGA POLANDIA</div>
+              <div class="evidence-media-wrap">
+                <img src="assets/franziska-archive.jpg" alt="Franziska Schanzkowska Kartu Buruh" class="evidence-img">
+              </div>
+              <div class="evidence-info">
+                <h3>Variasi Genetik Keluarga Schanzkowska</h3>
+                <p>Polisi Berlin menemukan kedua orang tua kandung Franziska memiliki variasi genetik khas:</p>
+                <ul class="evidence-bullets">
+                  <li><strong>Wajah/Rahang Menonjol (Habsburg jaw):</strong> Sifat Autosom Dominan (Gen <code>H</code>)</li>
+                  <li><strong>Kulit Albino:</strong> Sifat Autosom Resesif (Gen <code>a</code>)</li>
+                  <li><strong>Genotipe Ayah Franziska:</strong> Wajah menonjol heterozigot, kulit normal heterozigot &rarr; <code>HhAa</code></li>
+                  <li><strong>Genotipe Ibu Franziska:</strong> Wajah menonjol heterozigot, kulit normal heterozigot &rarr; <code>HhAa</code></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-hospital">FISIK ANNA ANDERSON</div>
+              <div class="evidence-media-wrap">
+                <img src="assets/anna-anderson-photo.jpg" alt="Fisik Anna Anderson" class="evidence-img">
+              </div>
+              <div class="evidence-info">
+                <h3>Kondisi Fisik Pasien Berlin (Anna Anderson)</h3>
+                <ul class="evidence-bullets">
+                  <li>Memiliki bentuk rahang/wajah menonjol (Sifat Dominan <code>H_</code>)</li>
+                  <li>Memiliki kulit albino (Sifat Resesif <code>aa</code>)</li>
+                  <li><strong>Fenotipe Target:</strong> Wajah Menonjol &amp; Kulit Albino (Genotipe <code>H_aa</code>)</li>
+                </ul>
+                <div class="probability-badge">
+                  🎯 Peluang lahir dari pasangan Schanzkowska: <strong>3/16 (18,75%)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulasi Dihibrid Mendel II -->
+          <section class="genetics-simulator-box" aria-label="Analisis Persilangan Dihibrid">
+            <div class="simulator-header">
+              <span class="sim-icon">📊</span>
+              <h4>Persilangan Dihibrid Hukum Mendel II: HhAa × HhAa</h4>
+            </div>
+            <div class="dihybrid-summary-card">
+              <div class="ratio-breakdown-grid">
+                <div class="ratio-box">
+                  <span class="ratio-fraction">9 / 16 (56,25%)</span>
+                  <span class="ratio-desc">Wajah Menonjol, Kulit Normal (H_A_)</span>
+                </div>
+                <div class="ratio-box highlight-ratio">
+                  <span class="ratio-fraction">3 / 16 (18,75%) ★</span>
+                  <span class="ratio-desc">Wajah Menonjol, Kulit Albino (H_aa) &mdash; <em>Cocok dengan Anna!</em></span>
+                </div>
+                <div class="ratio-box">
+                  <span class="ratio-fraction">3 / 16 (18,75%)</span>
+                  <span class="ratio-desc">Wajah Normal, Kulit Normal (hhA_)</span>
+                </div>
+                <div class="ratio-box">
+                  <span class="ratio-fraction">1 / 16 (6,25%)</span>
+                  <span class="ratio-desc">Wajah Normal, Kulit Albino (hhaa)</span>
+                </div>
+              </div>
+              <div class="mascot-mini-tip mt-3">
+                <img src="assets/detective-mascot.png" alt="Mascot Mini" class="mini-mascot-img">
+                <div class="mini-bubble">
+                  <strong>Analisis Detektif:</strong>
+                  "Berdasarkan Hukum Asortasi Bebas Mendel II, perkawinan dihibrid heterozigot HhAa × HhAa menghasilkan kombinasi fenotipe bertanda khas wajah menonjol dan kulit albino (H_aa) dengan peluang matematis 18,75%. Ini membuktikan secara kuat profil Anna Anderson sangat klop dengan anak biologis keluarga Schanzkowska!"
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Input Kolom Jawaban -->
+          <section class="stage-answer-section" aria-label="Kolom Catatan Penyelidik">
+            <div class="answer-card">
+              <div class="answer-prompt-header">
+                <span class="prompt-icon">📝</span>
+                <label for="input-stage-3" class="prompt-question">APA INFORMASI YANG TELAH DIDAPATKAN?</label>
+              </div>
+              <p class="prompt-subtext">
+                Tuliskan temuan Anda mengenai perhitungan persilangan dihibrid Mendel II dan kecocokan sifat fisik Anna Anderson dengan keluarga Schanzkowska.
+              </p>
+              <textarea id="input-stage-3" class="detective-textarea" placeholder="Contoh catatan: Kedua orang tua Franziska bergenotipe HhAa. Persilangan HhAa x HhAa menghasilkan fenotipe rahang menonjol dan albino (H_aa) sebesar 3/16 atau 18,75%. Karakteristik ini persis cocok dengan kondisi fisik Anna Anderson..."></textarea>
+              <div class="answer-action-bar">
+                <span class="save-status-msg" id="status-stage-3">Catatan tersimpan otomatis</span>
+                <button type="button" class="btn-save-stage" data-next-stage="4" id="btn-save-stage-3">
+                  <span>Simpan Catatan &amp; Lanjut ke Tahap 4</span>
+                  <span class="btn-arrow">➡</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <!-- =================== TAHAP 4 =================== -->
+        <article class="stage-panel hidden" id="stage-panel-4">
+          <header class="stage-header">
+            <div class="stage-meta">
+              <span class="stage-badge">TAHAP 4: ANALISIS DNA MITOKONDRIA (mtDNA)</span>
+              <span class="tp-badge">Menguji TP 1 - Materi Genetik Sel &amp; Pewarisan Maternal</span>
+            </div>
+            <h2 class="stage-main-title">Uji Garis Keturunan Maternal (Ibu)</h2>
+            <p class="stage-lead">
+              Pengadilan Berlin menolak klaim Anna Anderson karena bukti fisik di Tahap 3, namun pengacara Anna menuntut bukti DNA yang lebih modern. Tim forensik Berlin memutuskan melakukan tes DNA Mitokondria (mtDNA).
+            </p>
+          </header>
+
+          <div class="rule-banner">
+            <span class="rule-icon">🔬</span>
+            <div class="rule-text">
+              <strong>Prinsip Genetika Molekuler:</strong>
+              DNA Mitokondria (mtDNA) hanya diturunkan secara <em>maternal</em> (garis ibu murni) melalui sitoplasma sel telur (ovum). Sel sperma ayah tidak menyumbangkan mitokondria ke zigot. Oleh sebab itu, seluruh anak (laki-laki dan perempuan) dari seorang ibu memiliki sekuens mtDNA yang 100% identik dengan ibu kandungnya!
+            </div>
+          </div>
+
+          <div class="evidence-grid-duo">
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-police">UJI SAMPEL RAMBUT SCHANZKOWSKA</div>
+              <div class="evidence-info">
+                <h3>Sampel Saudara Kandung Franziska</h3>
+                <ul class="evidence-bullets">
+                  <li>Tim forensik mengambil sampel rambut dari saudara kandung laki-laki Franziska Schanzkowska (Carl Schanzkowska).</li>
+                  <li>Karena Carl dan Franziska lahir dari ibu yang sama, keduanya mewarisi mtDNA ibu yang persis sama.</li>
+                  <li><strong>Hasil Sekuensing mtDNA:</strong> Anna Anderson <strong>COCOK 100%</strong> dengan mtDNA keluarga Schanzkowska!</li>
+                </ul>
+                <div class="match-badge match-true">
+                  ✓ KECOCOKAN mtDNA: 100% IDENTIK DENGAN KELUARGA SCHANZKOWSKA
+                </div>
+              </div>
+            </div>
+
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-imperial">GARIS KETURUNAN TSARINA ALEXANDRA</div>
+              <div class="evidence-info">
+                <h3>Garis Maternal Anastasia Asli</h3>
+                <ul class="evidence-bullets">
+                  <li>Anastasia asli mewarisi mtDNA maternal dari ibunya (Tsarina Alexandra) yang bersumber dari nenek buyutnya Ratu Victoria dari Inggris.</li>
+                  <li><strong>Hasil Pembanding:</strong> Sekuens mtDNA Anna Anderson <strong>SAMA SEKALI TIDAK COCOK</strong> dengan garis keturunan maternal Tsarina Alexandra.</li>
+                </ul>
+                <div class="match-badge match-false">
+                  ✗ KECOCOKAN mtDNA: 0% KECOCOKAN DENGAN DINASTI ROMANOV
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DNA Sequence Visual Comparator -->
+          <section class="genetics-simulator-box" aria-label="Komparasi Sekuens DNA Mitokondria">
+            <div class="simulator-header">
+              <span class="sim-icon">🧬</span>
+              <h4>Laboratorium Sekuensing Forensik: Wilayah Hipervariabel mtDNA (D-Loop)</h4>
+            </div>
+            <div class="dna-compare-wrap">
+              <div class="dna-seq-row">
+                <span class="dna-label">Anna Anderson (Subjek Uji):</span>
+                <span class="dna-code code-anna">A-T-G-C-C-T-A-G-G-T-A-C-C-T-A</span>
+              </div>
+              <div class="dna-seq-row">
+                <span class="dna-label">Keluarga Schanzkowska:</span>
+                <span class="dna-code code-schanzkowska">A-T-G-C-C-T-A-G-G-T-A-C-C-T-A</span>
+                <span class="dna-verdict-tag tag-match">100% Identik</span>
+              </div>
+              <div class="dna-seq-row">
+                <span class="dna-label">Tsarina Alexandra (Romanov):</span>
+                <span class="dna-code code-romanov">T-C-A-A-G-G-C-T-A-A-C-T-T-G-C</span>
+                <span class="dna-verdict-tag tag-mismatch">Tidak Cocok</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Input Kolom Jawaban -->
+          <section class="stage-answer-section" aria-label="Kolom Catatan Penyelidik">
+            <div class="answer-card">
+              <div class="answer-prompt-header">
+                <span class="prompt-icon">📝</span>
+                <label for="input-stage-4" class="prompt-question">APA INFORMASI YANG TELAH DIDAPATKAN?</label>
+              </div>
+              <p class="prompt-subtext">
+                Tuliskan temuan Anda mengenai prinsip pewarisan maternal mtDNA dan hasil sekuensing Anna Anderson.
+              </p>
+              <textarea id="input-stage-4" class="detective-textarea" placeholder="Contoh catatan: DNA mitokondria hanya diturunkan melalui garis ibu (maternal). Uji laboratorium membuktikan mtDNA Anna Anderson 100% cocok dengan sampel keluarga Schanzkowska, dan sama sekali tidak cocok dengan garis ibu Tsarina Alexandra..."></textarea>
+              <div class="answer-action-bar">
+                <span class="save-status-msg" id="status-stage-4">Catatan tersimpan otomatis</span>
+                <button type="button" class="btn-save-stage" data-next-stage="5" id="btn-save-stage-4">
+                  <span>Simpan Catatan &amp; Lanjut ke Tahap 5</span>
+                  <span class="btn-arrow">➡</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <!-- =================== TAHAP 5 =================== -->
+        <article class="stage-panel hidden" id="stage-panel-5">
+          <header class="stage-header">
+            <div class="stage-meta">
+              <span class="stage-badge">TAHAP 5: PEMBUKTIAN ANTROPOLOGI FORENSIK &amp; DENTAL</span>
+              <span class="tp-badge">Menguji TP 4 - Variasi Sifat Autosom &amp; Poligenik</span>
+            </div>
+            <h2 class="stage-main-title">Pemeriksaan Rumus Gigi, Geraham, dan Bentuk Tengkorak</h2>
+            <p class="stage-lead">
+              Pengacara Anna Anderson bersikeras bahwa struktur gigi depan Anna yang agak renggang mirip dengan foto masa kecil Putri Anastasia. Pengadilan Berlin memanggil ahli antropologi forensik untuk memeriksa pola rumus gigi dan bentuk tengkorak.
+            </p>
+          </header>
+
+          <div class="evidence-grid-duo">
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-police">LAB ANATOMI BERLIN 1922</div>
+              <div class="evidence-media-wrap">
+                <img src="assets/dental-forensic-xray.jpg" alt="Rontgen Dental dan Tengkorak" class="evidence-img">
+              </div>
+              <div class="evidence-info">
+                <h3>Fakta Genetika &amp; Anatomi</h3>
+                <ul class="evidence-bullets">
+                  <li><strong>Fakta Genetika:</strong> Bentuk rahang bawah dan kerapatan gigi diatur oleh gen <strong>kodominan dan poligenik</strong> pada kromosom autosom.</li>
+                  <li>Pertumbuhan dan susunan akar geraham permanen memiliki pola morfologi yang tidak berubah seumur hidup.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="evidence-dossier-card">
+              <div class="evidence-stamp stamp-warning">HASIL ANALISIS RADIOGRAFI</div>
+              <div class="evidence-info">
+                <h3>Hasil Pencocokan Rontgen Gigi</h3>
+                <ul class="evidence-bullets">
+                  <li>Setelah mencocokkan rontgen gigi Anna Anderson dengan catatan gigi masa kecil Anastasia di Rusia:</li>
+                  <li>Ditemukan <strong>4 perbedaan fatal struktur geraham</strong> yang tidak mungkin berubah akibat proses pertumbuhan biologis!</li>
+                  <li>Sebaliknya, cetakan rahang dan rumus gigi tersebut <strong>cocok sempurna</strong> dengan cetakan rahang keluarga Schanzkowska.</li>
+                </ul>
+                <div class="alert-box-warning">
+                  🦷 <strong>Kesimpulan Antropologi:</strong> Morfologi kraniofasial dan dental menggugurkan argumen pengacara Anna Anderson.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Kolom Jawaban -->
+          <section class="stage-answer-section" aria-label="Kolom Catatan Penyelidik">
+            <div class="answer-card">
+              <div class="answer-prompt-header">
+                <span class="prompt-icon">📝</span>
+                <label for="input-stage-5" class="prompt-question">APA INFORMASI YANG TELAH DIDAPATKAN?</label>
+              </div>
+              <p class="prompt-subtext">
+                Tuliskan temuan antropologi forensik dan dental mengenai perbedaan struktur gigi Anastasia dan kesesuaiannya dengan Franziska.
+              </p>
+              <textarea id="input-stage-5" class="detective-textarea" placeholder="Contoh catatan: Struktur rahang dan gigi bersifat poligenik dan kodominan pada autosom. Rontgen membuktikan terdapat 4 perbedaan struktur geraham permanen antara Anna Anderson dan catatan gigi Anastasia asli, namun susunannya cocok dengan cetakan rahang keluarga Schanzkowska..."></textarea>
+              <div class="answer-action-bar">
+                <span class="save-status-msg" id="status-stage-5">Catatan tersimpan otomatis</span>
+                <button type="button" class="btn-save-stage btn-accent-gold" data-next-stage="6" id="btn-save-stage-5">
+                  <span>Simpan Catatan &amp; Menuju Sidang Pengadilan Berlin</span>
+                  <span class="btn-arrow">⚖️</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <!-- =================== TAHAP 6 =================== -->
+        <article class="stage-panel hidden" id="stage-panel-6">
+          <header class="stage-header">
+            <div class="stage-meta">
+              <span class="stage-badge">TAHAP 6: SIDANG PUTUSAN PENGADILAN BERLIN</span>
+              <span class="tp-badge">Puncak Penyelidikan Ilmiah &amp; Putusan Hukum</span>
+            </div>
+            <h2 class="stage-main-title">Ruang Sidang Pengadilan Kriminal Berlin (1922)</h2>
+            <p class="stage-lead">
+              Ini adalah puncak dari seluruh rangkaian investigasi. Tim Detektif Medis Kepolisian Berlin masuk ke ruang sidang pengadilan Berlin untuk membacakan tuntutan dan mendengarkan putusan hakim berdasarkan seluruh bukti genetika yang dikumpulkan dari Tahap 1 sampai 5.
+            </p>
+          </header>
+
+          <!-- Courtroom Visual Banner -->
+          <div class="court-visual-banner">
+            <img src="assets/berlin-courtroom.jpg" alt="Ruang Sidang Pengadilan Berlin 1922" class="court-bg-img">
+            <div class="court-banner-overlay">
+              <div class="gavel-symbol">⚖️</div>
+              <span class="court-badge">KAMMERGERICHT BERLIN • MAJELIS HAKIM FEDERAL</span>
+              <h3>Sidang Perkara Klaim Hak Waris Kekaisaran Romanov</h3>
+            </div>
+          </div>
+
+          <!-- Dossier Summary of Student's Collected Notes -->
+          <section class="investigator-notes-review-card">
+            <div class="review-header">
+              <span class="review-icon">📂</span>
+              <h3>BERKAS RANGKUMAN CATATAN DETEKTIF MEDIS</h3>
+              <span class="review-badge-user" id="review-user-name">Detektif Medis</span>
+            </div>
+            <p class="review-sub">Berikut adalah seluruh catatan penyelidikan yang telah Anda kumpulkan selama investigasi Tahap 1 hingga Tahap 5:</p>
+            <div class="review-notes-grid">
+              <div class="review-note-item">
+                <span class="rn-label">Tahap 1 (Golongan Darah):</span>
+                <p id="review-note-1" class="rn-content"><em>Belum ada catatan...</em></p>
+              </div>
+              <div class="review-note-item">
+                <span class="rn-label">Tahap 2 (Hemofilia / Pautan Seks):</span>
+                <p id="review-note-2" class="rn-content"><em>Belum ada catatan...</em></p>
+              </div>
+              <div class="review-note-item">
+                <span class="rn-label">Tahap 3 (Dihibrid / Sifat Fisik):</span>
+                <p id="review-note-3" class="rn-content"><em>Belum ada catatan...</em></p>
+              </div>
+              <div class="review-note-item">
+                <span class="rn-label">Tahap 4 (DNA Mitokondria / Maternal):</span>
+                <p id="review-note-4" class="rn-content"><em>Belum ada catatan...</em></p>
+              </div>
+              <div class="review-note-item">
+                <span class="rn-label">Tahap 5 (Antropologi &amp; Dental):</span>
+                <p id="review-note-5" class="rn-content"><em>Belum ada catatan...</em></p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Closing Statement Trigger & Display -->
+          <section class="court-verdict-section">
+            <div class="court-action-box" id="court-read-action">
+              <button id="btn-read-closing-statement" class="btn-primary-noir btn-lg-court">
+                <span class="btn-icon">📜</span>
+                <span class="btn-text">BACAKAN TUNTUTAN FORENSIK DI HADAPAN HAKIM</span>
+              </button>
+              <p class="court-hint">Klik untuk membacakan Closing Statement Tim Forensik secara resmi di pengadilan.</p>
+            </div>
+
+            <!-- Closing Statement Card (Animated on trigger) -->
+            <div id="closing-statement-container" class="closing-statement-card hidden">
+              <div class="statement-parchment-border">
+                <div class="statement-header">
+                  <span class="stamp-court">DOKUMEN RESMI PENGADILAN</span>
+                  <h3>Pernyataan Penutup Tim Forensik di Pengadilan</h3>
+                  <span class="statement-date">Berlin, Oktober 1922</span>
+                </div>
+                
+                <div class="statement-speech-body">
+                  <p class="speech-opening">
+                    “Yang Mulia Majelis Hakim Pengadilan Berlin,<br>
+                    Berdasarkan penyelidikan ilmiah berbasis prinsip pewarisan sifat makhluk hidup, Tim Detektif Genetika Forensik dengan ini menyatakan secara mutlak bahwa <strong>Wanita di Kamar 4 (Anna Anderson) BUKANLAH Putri Anastasia dari Kekaisaran Romanov, melainkan Franziska Schanzkowska.</strong>”
+                  </p>
+                  
+                  <p class="speech-intro">
+                    Kesimpulan hukum ini didasarkan pada rantai bukti genetik berikut:
+                  </p>
+
+                  <ol class="speech-evidence-chain">
+                    <li>
+                      <strong>Gugatan Hemofilia:</strong> Anastasia yang asli lahir dari ayah normal (<code>XᴴY</code>) dan ibu carrier (<code>XᴴXʰ</code>), sehingga Anastasia mustahil menderita hemofilia. Sementara terdakwa Anna Anderson menderita hemofilia aktif (<code>XʰXʰ</code>). Secara genetika pautan seks, ia tidak mungkin anak Tsar Nicholas II.
+                    </li>
+                    <li>
+                      <strong>Kecocokan Profil Fisik:</strong> Karakteristik fisik Anna Anderson yang memiliki rahang menonjol dan kulit albino merupakan kombinasi sifat dihibrid heterozigot (<code>H_aa</code>) dengan probabilitas 18,75% yang klop lahir dari pasangan suami-istri Schanzkowska.
+                    </li>
+                    <li>
+                      <strong>Bukti Mutlak Genetik (Maternal):</strong> Uji DNA Mitokondria membuktikan bahwa terdakwa membagikan garis keturunan maternal yang identik dengan keluarga Schanzkowska, dan menolak 100% hubungan darah dengan Tsarina Alexandra.
+                    </li>
+                  </ol>
+
+                  <p class="speech-verdict-verbatim">
+                    “Dengan demikian, klaim kepemilikan harta kekaisaran oleh Anna Anderson resmi <strong>DITOLAK demi hukum dan sains.</strong>”
+                  </p>
+                </div>
+
+                <!-- Gavel Bang Animation Sequence -->
+                <div class="gavel-knock-stage" id="gavel-knock-box">
+                  <div class="gavel-icon-anim" id="gavel-icon">🔨</div>
+                  <div class="gavel-sound-words" id="gavel-words">
+                    <span class="knock-word kw-1">TOK!</span>
+                    <span class="knock-word kw-2">TOK!</span>
+                    <span class="knock-word kw-3">TOK!</span>
+                  </div>
+                  <div class="judge-decree" id="judge-decree">
+                    GUGATAN ANNA ANDERSON DITOLAK DEMI HUKUM DAN SAINS!
+                  </div>
+                </div>
+
+                <div class="statement-footer">
+                  <button id="btn-claim-award" class="btn-award-gold hidden">
+                    <span class="btn-icon">🏆</span>
+                    <span>TERIMA PENGHARGAAN: "MASTER OF DETECTIVE"</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Master of Detective Certificate Modal / Final Award Display -->
+            <div id="award-certificate-container" class="certificate-award-wrapper hidden">
+              <div class="certificate-frame" id="printable-certificate">
+                <div class="cert-border-outer">
+                  <div class="cert-border-inner">
+                    <div class="cert-corner-ornament corner-tl">❖</div>
+                    <div class="cert-corner-ornament corner-tr">❖</div>
+                    <div class="cert-corner-ornament corner-bl">❖</div>
+                    <div class="cert-corner-ornament corner-br">❖</div>
+
+                    <header class="cert-header">
+                      <div class="cert-badge-crest">⚖️ 🇩🇪 🔬</div>
+                      <span class="cert-subtitle">GERICHTLICHE MEDIZIN &amp; KRIMINALPOLIZEI BERLIN</span>
+                      <h1 class="cert-title">PIAGAM PENGHARGAAN KEHORMATAN</h1>
+                      <div class="cert-title-gold">MASTER OF DETECTIVE</div>
+                    </header>
+
+                    <div class="cert-body">
+                      <p class="cert-grant-text">Dengan hormat dianugerahkan kepada:</p>
+                      <h2 class="cert-recipient-name" id="cert-user-name">DETEKTIF MEDIS</h2>
+                      <p class="cert-citation">
+                        Atas kecerdasan deduksi ilmiah, penguasaan prinsip genetika pewarisan sifat (Mendelisme, Pautan Seks, DNA Mitokondria, dan Antropologi Forensik), serta keberhasilan membongkar konspirasi terbesar abad ke-20 dalam sidang pengadilan Berlin 1922.
+                      </p>
+                    </div>
+
+                    <footer class="cert-footer">
+                      <div class="cert-sig-box">
+                        <div class="cert-sig-line">Dr. H. Richter</div>
+                        <span class="cert-sig-role">Kepala Forensik Berlin</span>
+                      </div>
+                      
+                      <div class="cert-seal-box">
+                        <div class="wax-seal">
+                          <span class="seal-inner">LUMOCASE<br>1922<br>★</span>
+                        </div>
+                      </div>
+
+                      <div class="cert-sig-box">
+                        <div class="cert-sig-line">Inspektur Lumocase</div>
+                        <span class="cert-sig-role">Detektif Utama</span>
+                      </div>
+                    </footer>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Certificate Options Buttons -->
+              <div class="certificate-actions">
+                <button id="btn-print-certificate" class="btn-primary-noir">
+                  <span>🖨️ Cetak / Unduh Piagam</span>
+                </button>
+                <button id="btn-restart-investigation" class="btn-secondary-noir">
+                  <span>🔄 Mulai Kasus Baru</span>
+                </button>
+                <button id="btn-review-case" class="btn-outline-noir">
+                  <span>📖 Tinjau Kembali Berkas Kasus</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </article>
+
+      </main>
+    </div>
+  </section>
+
+  <!-- Mascot Floating Helper (Available during stage investigation) -->
+  <aside class="floating-mascot-helper" id="floating-mascot-widget" title="Tanya Detektif Lumocase">
+    <div class="helper-bubble hidden" id="helper-bubble">
+      <p id="helper-bubble-text">Halo! Periksa bukti di berkas ini dengan saksama.</p>
+      <button class="helper-close-btn" id="btn-close-helper">×</button>
+    </div>
+    <button class="helper-mascot-btn" id="btn-helper-mascot" aria-label="Bantuan Detektif">
+      <img src="assets/detective-mascot.png" alt="Detektif Lumocase Maskot" class="helper-mascot-img">
+    </button>
+  </aside>
+
+  <!-- Locked Case Modal Alert -->
+  <div id="locked-case-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-icon">🔒</div>
+      <h3>Arsip Kasus Masih Terkunci!</h3>
+      <p>
+        <strong>Kasus 2: Misteri Arsip Dokumen Hitam</strong> saat ini masih dalam penyegelan arsip kepolisian federal. Selesaikan Kasus 1 terlebih dahulu untuk mendapatkan gelar <em>Master of Detective</em>!
+      </p>
+      <button class="btn-primary-noir" id="btn-close-modal">Tutup</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
